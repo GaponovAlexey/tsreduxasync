@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-const url = 'https://iakjucmhukqakhswuqgh.supabase.co/rest/v1/calls?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyNzgzMTg0OCwiZXhwIjoxOTQzNDA3ODQ4fQ.IvTqqvidDxgLV_nqYd0VFPV9p4I-h1mNsuc9tkt1daI'
+const url = `https://iakjucmhukqakhswuqgh.supabase.co/rest/v1/calls?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyNzgzMTg0OCwiZXhwIjoxOTQzNDA3ODQ4fQ.IvTqqvidDxgLV_nqYd0VFPV9p4I-h1mNsuc9tkt1daI`
 
 export const fetchAction = createAsyncThunk(
 	'todo/fetchAction',
@@ -18,6 +18,23 @@ export const fetchAction = createAsyncThunk(
 	}
 )
 
+export const deletTodod = createAsyncThunk(
+	'todo/deleteTodo',
+	async function (id, { dispatch, rejectWithValue }) {
+		try {
+			const response = await fetch(url + `/${id}`, {
+				method: 'DELETE',
+			})
+			if (!response.ok) {
+				throw new Error('delet error')
+			}
+			dispatch(removeTodo(id))
+		} catch (error: any) {
+			return rejectWithValue(error.message)
+		}
+	}
+)
+
 
 
 
@@ -30,8 +47,8 @@ const oneslice = createSlice({
 		]
 	},
 	reducers: {
-		FetchState: (state, actions) => {
-			state.todo += actions.payload
+		removeTodo: (state, actions) => {
+			state.todo = state.todo.filter(e => e.id !== actions.payload)
 		}
 	},
 	extraReducers: {
@@ -51,6 +68,6 @@ const oneslice = createSlice({
 	}
 })
 
-export const { FetchState } = oneslice.actions
+export const { removeTodo } = oneslice.actions
 
 export default oneslice.reducer

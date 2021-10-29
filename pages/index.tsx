@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAction } from '../redux/reduser'
+import { deletTodod, fetchAction, removeTodo } from '../redux/reduser'
+import NewTodoForm from './NewTodoForm'
 import { Onepage } from './Onepage'
 
 const Home: NextPage = () => {
@@ -12,13 +13,18 @@ const Home: NextPage = () => {
     dispatch(fetchAction())
   }, [dispatch])
 
+  const delets = (id) => {
+    dispatch(deletTodod(id))
+  }
+
   return (
     <div>
+      <NewTodoForm  />
       {status === 'loading' && <h2>loading...</h2>}
       {error && <h2> error {error}</h2>}
 
       {state.map(s =>
-        <Onepage key={s.id} {...s} />
+        <Onepage key={s.id} {...s} delets={delets} />
       )}
     </div>
   )
