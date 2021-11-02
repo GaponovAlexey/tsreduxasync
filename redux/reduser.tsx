@@ -9,7 +9,7 @@ export const fetchAction = createAsyncThunk(
 			if (!response.ok) {
 				throw new Error('Server Error')
 			}
-			const data = await response.json()
+			const data: any = await response.json()
 			return data
 
 		} catch (e) {
@@ -22,19 +22,21 @@ export const deletTodod = createAsyncThunk(
 	'todo/deleteTodo',
 	async function (id, { dispatch, rejectWithValue }) {
 		try {
-			const response = await fetch(url + `/${id}`, {
+			const response = await fetch(`${url}/${id}`, {
+				
 				method: 'DELETE',
 			})
+			console.log(response);
 			if (!response.ok) {
 				throw new Error('delet error')
 			}
+
 			dispatch(removeTodo(id))
 		} catch (error: any) {
 			return rejectWithValue(error.message)
 		}
 	}
 )
-
 
 
 
@@ -52,7 +54,7 @@ const oneslice = createSlice({
 		}
 	},
 	extraReducers: {
-		[fetchAction.pending]: (state) => {
+		[fetchAction.pending]: (state: any) => {
 			state.status = 'loading'
 			state.error = null
 		},
@@ -63,8 +65,15 @@ const oneslice = createSlice({
 		[fetchAction.rejected]: (state, action) => {
 			state.status = 'rejected'
 			state.eroor = action.payload
-		}
-
+		},
+		[deletTodod.fulfilled]: (state, action) => {
+			state.status = 'resolve'
+			state.todo = action.payload.id
+		},
+		[deletTodod.rejected]: (state, action) => {
+			state.status = 'rejected'
+			state.eroor = action.payload
+		},
 	}
 })
 
